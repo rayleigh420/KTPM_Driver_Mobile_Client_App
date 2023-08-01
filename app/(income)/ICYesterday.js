@@ -5,7 +5,7 @@ import { Icon, Divider } from "@rneui/themed";
 import { fontSizes, icons } from "../../src/constants";
 import { Stack, useRouter } from "expo-router";
 
-export default function SignIn() {
+export default function ICYesterday() {
   const navigation = useRouter();
   const [show, setShow] = useState(false);
   return (

@@ -8,7 +8,7 @@ const ButtonIncome = (props) => {
     <TouchableOpacity
       style={{
         width: Dimensions.get("window").width - 40,
-        height: 100,
+        minHeight: 100,
         backgroundColor: "#F3F3F3",
         alignSelf: "center",
         borderRadius: 10,
