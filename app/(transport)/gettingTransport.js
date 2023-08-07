@@ -205,10 +205,10 @@ export default function SignIn() {
                       fontWeight: 600,
                     }}
                   >
-                    Doc La Binh Duong Bakery
+                    Doc La Binh Duong Garage
                   </Text>
                   <Text style={{ color: "white" }}>
-                    6/19 Nguyen Van Linh, Phan Thanh, Thanh Khe, Binh Duong
+                    6/15 Nguyen Van Troi, Thac Gian, Thanh My, Binh Duong
                   </Text>
                 </View>
               </View>
