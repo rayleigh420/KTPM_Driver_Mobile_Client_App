@@ -69,7 +69,7 @@ const Chat = () => {
       setRooms(rooms);
     });
   }, [socket]);
-  console.log(rooms);
+
   return (
     <SafeAreaView style={styles.chatscreen}>
       <View style={styles.chattopContainer}>

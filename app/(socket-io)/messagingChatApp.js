@@ -37,7 +37,7 @@ const Messaging = () => {
   };
 
   //👇🏻 Sets the header title to the name chatroom's name
-  useLayoutEffect(() => {
+  useEffect(() => {
     // navigation.setOptions({ title: name });
     //👇🏻 Sends the id to the server to fetch all its messages
     socket.emit("findRoom", id);
@@ -67,6 +67,12 @@ const Messaging = () => {
 
     console.log({
       message,
+      user,
+      timestamp: { hour, mins },
+    });
+    socket.emit("newMessage", {
+      message,
+      room_id: id,
       user,
       timestamp: { hour, mins },
     });
