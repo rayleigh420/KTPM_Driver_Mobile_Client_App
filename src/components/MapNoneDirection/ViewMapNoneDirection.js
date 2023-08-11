@@ -15,7 +15,7 @@ import { calculateDistance, getCoordinates } from "../../api/mapAPI";
 import { useNavigation, useRouter } from "expo-router";
 import { EXPO_PUBLIC_MAP_APIKEY } from "@env";
 
-export default function ViewMap({ targetAddress }) {
+export default function ViewMapNoneDirection({ targetAddress }) {
   const [location, setLocation] = useState(null);
   const navigation = useNavigation();
 
@@ -65,10 +65,15 @@ export default function ViewMap({ targetAddress }) {
     })();
   }, []);
 
+  const [marginBottom, setMarginBottom] = useState(null);
+
   return (
     <View className="flex-1">
       {location != null ? (
         <MapView
+          onMapReady={() => {
+            setMarginBottom(5);
+          }}
           className="w-full h-full"
           initialRegion={{
             latitude: location.latitude,
@@ -76,6 +81,12 @@ export default function ViewMap({ targetAddress }) {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
+          showsUserLocation={true}
+          showsMyLocationButton={true}
+          userInterfaceStyle="dark"
+          showsCompass={true}
+          mapPadding={{ top: 400, bottom: 300, right: 20 }}
+          style={{ flex: 1, marginBottom: marginBottom }}
         >
           {/* <MapViewDirections
             origin={desCoor}
@@ -87,7 +98,7 @@ export default function ViewMap({ targetAddress }) {
             strokeWidth={7}
             strokeColor="#00B0FF"
           /> */}
-          <Marker
+          {/* <Marker
             coordinate={{
               latitude: location.latitude,
               longitude: location.longitude,
@@ -110,7 +121,7 @@ export default function ViewMap({ targetAddress }) {
                 }}
               />
             </View>
-          </Marker>
+          </Marker> */}
           {/* <Marker coordinate={desCoor} title="Destination Location" /> */}
         </MapView>
       ) : (
