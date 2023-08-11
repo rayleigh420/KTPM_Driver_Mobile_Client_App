@@ -9,6 +9,8 @@ export default function App() {
       <Text className="text-red-400">Router</Text>
       <Link href="/home">Home page</Link>
       <Link href="/gettingMode">Getting Mode</Link>
+      <Link href="/gettingTransport">Getting Transport</Link>
+      <Link href="/doneTransport">Done Transport</Link>
       <StatusBar style="auto" />
     </View>
   );
