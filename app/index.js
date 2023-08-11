@@ -8,6 +8,32 @@ export default function App() {
     <View className="flex-1 items-center justify-center bg-white gap-3">
       <Text className="text-red-400">Router</Text>
       <Link href="/home">Home page</Link>
+      <Text className="text-red-400">Router</Text>
+      <Link href="/home">Home page</Link>
+      <Link href="/signUp">
+        SignUp
+      </Link>
+      <Link href="/signIn">
+        SignIn
+      </Link>
+      <Link href="/typePass">
+        TypePass
+      </Link>
+      <Link href="/signInInput">
+        signInInput
+      </Link>
+      <Link href="/forgotPass">
+        forgot password
+      </Link>
+      <Link href="/ICToday">
+        Today Income
+      </Link>
+      <Link href="/ICYesterday">
+        Yesterday Income
+      </Link>
+      <Link href="/ICHistory">
+        History Income
+      </Link>
       <Link href="/gettingMode">Getting Mode</Link>
       <Link href="/gettingTransport">Getting Transport</Link>
       <Link href="/confirmDoneTransport">Confirm Done Transport</Link>
@@ -16,7 +42,7 @@ export default function App() {
       <Link href="/chatApp">Chat app using socket io</Link>
       <Link href="/loginChatApp">Login chat app</Link>
       <Link href="/messagingChatApp">messagingChatApp</Link>
-      <StatusBar style="auto" />
+
     </View>
   );
 }
