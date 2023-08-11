@@ -77,7 +77,7 @@ function gettingMode() {
         }}
       />
       <View className="h-full">
-        <ViewMap targetAddress={"227 Nguyen Van Cu"} />
+        <ViewMap targetAddress={"227 Nguyen Van Cu"} isShowUserLocation />
       </View>
       <View
         style={{

@@ -226,8 +226,19 @@ export default function SignIn() {
             }}
             titleStyle={{ marginLeft: 30 }}
             onPress={() => {
-              Alert.alert("Click Accept");
               clearInterval(timer.current);
+              navigation.push({
+                pathname: "/progressTransport",
+                params: {
+                  pickUpLocation:
+                    "Doc La Binh Duong Bakery, 6/19 Nguyen Van Linh, Phan Thanh, Thanh Khe, Binh Duong",
+                  destinationLocation:
+                    "Doc La Binh Duong Garage,6/15 Nguyen Van Troi, Thac Gian, Thanh My, Binh Duong",
+                  nameCustomer: "Nguyen Ngoc Anh Thu",
+                  price: 22.222,
+                  methodPayment: "Cash",
+                },
+              });
             }}
           >
             <View />

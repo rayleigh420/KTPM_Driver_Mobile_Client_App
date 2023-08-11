@@ -14,8 +14,14 @@ import { useQuery } from "@tanstack/react-query";
 import { calculateDistance, getCoordinates } from "../../api/mapAPI";
 import { useNavigation, useRouter } from "expo-router";
 import { EXPO_PUBLIC_MAP_APIKEY } from "@env";
+import { Icon } from "@rneui/themed";
+import { fontSizes } from "../../constants";
 
-export default function ViewMap({ targetAddress }) {
+export default function ViewMap({
+  targetAddress,
+  marginBottomViewMap,
+  isShowUserLocation,
+}) {
   const [location, setLocation] = useState(null);
   const navigation = useNavigation();
 
@@ -68,7 +74,7 @@ export default function ViewMap({ targetAddress }) {
   const [marginBottom, setMarginBottom] = useState(null);
 
   return (
-    <View className="flex-1">
+    <View className="flex-1" style={{ marginBottom: marginBottomViewMap }}>
       {location != null ? (
         <MapView
           onMapReady={() => {
@@ -81,7 +87,7 @@ export default function ViewMap({ targetAddress }) {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
-          showsUserLocation={true}
+          showsUserLocation={isShowUserLocation ? true : false}
           showsMyLocationButton={true}
           userInterfaceStyle="dark"
           showsCompass={true}
@@ -98,30 +104,36 @@ export default function ViewMap({ targetAddress }) {
             strokeWidth={7}
             strokeColor="#00B0FF"
           /> */}
-          {/* <Marker
-            coordinate={{
-              latitude: location.latitude,
-              longitude: location.longitude,
-            }}
-            title={"Current Location " + distance}
-          >
-            <View
-              style={{
-                backgroundColor: "red",
-                padding: 10,
-                borderRadius: 100,
-                opacity: 0.5,
+          {!isShowUserLocation ? (
+            <Marker
+              coordinate={{
+                latitude: location.latitude,
+                longitude: location.longitude,
               }}
+              title={"Current Location " + distance}
             >
               <View
                 style={{
-                  padding: 5,
+                  backgroundColor: "white",
                   borderRadius: 100,
-                  backgroundColor: "blue",
+                  borderWidth: 2,
+                  borderColor: "#229BEB",
                 }}
-              />
-            </View>
-          </Marker> */}
+              >
+                <View
+                  style={{ height: 30, width: 30, justifyContent: "center" }}
+                >
+                  <Icon
+                    type="font-awesome-5"
+                    name="motorcycle"
+                    iconStyle={{ fontSize: fontSizes.h3 }}
+                  />
+                </View>
+              </View>
+            </Marker>
+          ) : (
+            <></>
+          )}
           {/* <Marker coordinate={desCoor} title="Destination Location" /> */}
         </MapView>
       ) : (
