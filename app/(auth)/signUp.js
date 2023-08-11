@@ -24,7 +24,7 @@ export default function SignUp() {
     mutationFn: ({ email, role }) => signUp({ email, role }),
     onSuccess: (data) => {
       navigation.push("/typePass");
-      console.log(data);
+      // console.log(data);
     },
     onError: (err) => {
       if (err.response.status == 401) {

@@ -57,7 +57,7 @@ function gettingMode() {
   useEffect(() => {
     if (status === true) {
       socket.on("rideRequest", (data) => {
-        console.log(111, data);
+        console.log("Data ride request: ", data);
       });
     } else if (status === false) {
       socket.disconnect();

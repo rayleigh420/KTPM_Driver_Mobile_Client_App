@@ -229,7 +229,13 @@ function progressTransport() {
                         borderRadius: 100,
                         backgroundColor: "#E8E8E8",
                       }}
-                      onPress={() => Alert.alert("You clicked " + item.title)}
+                      onPress={() => {
+                        if (item.id === 1) {
+                          navigation.push("/messagingChatApp");
+                        } else {
+                          Alert.alert("You clicked " + item.title);
+                        }
+                      }}
                     >
                       <Icon
                         name={item.icon}

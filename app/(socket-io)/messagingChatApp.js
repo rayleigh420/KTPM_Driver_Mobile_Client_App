@@ -65,11 +65,11 @@ const Messaging = () => {
         ? `0${new Date().getMinutes()}`
         : `${new Date().getMinutes()}`;
 
-    console.log({
-      message,
-      user,
-      timestamp: { hour, mins },
-    });
+    // console.log({
+    //   message,
+    //   user,
+    //   timestamp: { hour, mins },
+    // });
     socket.emit("newMessage", {
       message,
       room_id: id,

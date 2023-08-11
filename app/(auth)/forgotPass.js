@@ -19,7 +19,7 @@ function typePin() {
   const forgotPassMutation = useMutation({
     mutationFn: ({ email }) => forgotPass({ email }),
     onSuccess: (data) => {
-      console.log(222, data);
+      // console.log(222, data);
       navigation.push("/signInInput");
     },
     onError: (err) => {
