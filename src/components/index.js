@@ -1,1 +1,1 @@
-export { default as ViewMapNoneDirection } from "./MapNoneDirection";
+export { default as ViewMap } from "./Map";

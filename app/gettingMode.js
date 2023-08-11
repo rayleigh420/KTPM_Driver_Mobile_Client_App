@@ -9,7 +9,7 @@ import {
   Alert,
 } from "react-native";
 import * as Location from "expo-location";
-import { ViewMapNoneDirection } from "../src/components";
+import { ViewMap } from "../src/components";
 import { Stack } from "expo-router";
 import { Button } from "@rneui/base";
 import { Icon } from "@rneui/themed";
@@ -77,7 +77,7 @@ function gettingMode() {
         }}
       />
       <View className="h-full">
-        <ViewMapNoneDirection targetAddress={"227 Nguyen Van Cu"} />
+        <ViewMap targetAddress={"227 Nguyen Van Cu"} />
       </View>
       <View
         style={{

@@ -15,7 +15,7 @@ import { calculateDistance, getCoordinates } from "../../api/mapAPI";
 import { useNavigation, useRouter } from "expo-router";
 import { EXPO_PUBLIC_MAP_APIKEY } from "@env";
 
-export default function ViewMapNoneDirection({ targetAddress }) {
+export default function ViewMap({ targetAddress }) {
   const [location, setLocation] = useState(null);
   const navigation = useNavigation();
 
