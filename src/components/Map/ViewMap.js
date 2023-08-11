@@ -35,7 +35,7 @@ export default function ViewMap({
   });
 
   const { data: distance } = useQuery({
-    queryKey: ["distance", targetAddress],
+    queryKey: ["distance", targetAddress, location, desCoor],
     queryFn: () => {
       if (location) {
         return calculateDistance({
@@ -43,7 +43,9 @@ export default function ViewMap({
           destination: desCoor,
         });
       } else {
-        return () => {};
+        return () => {
+          return "0 km";
+        };
       }
     },
   });

@@ -106,6 +106,17 @@ function typePin() {
       >
         Reset Password
       </Button>
+      <Text
+        style={{
+          fontSize: fontSizes.h5,
+          color: "gray",
+          marginHorizontal: 30,
+          marginTop: 20,
+        }}
+      >
+        You will be redirected to the login page and a new password will be sent
+        to your email if the account already exists
+      </Text>
     </View>
   );
 }
