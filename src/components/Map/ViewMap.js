@@ -21,8 +21,12 @@ export default function ViewMap({
   targetAddress,
   marginBottomViewMap,
   isShowUserLocation,
+  isMapViewDirection,
+  locationCustom,
 }) {
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState(
+    locationCustom ? locationCustom : null
+  );
   const navigation = useNavigation();
 
   const {
@@ -35,7 +39,7 @@ export default function ViewMap({
   });
 
   const { data: distance } = useQuery({
-    queryKey: ["distance", targetAddress],
+    queryKey: ["distance", targetAddress, location, desCoor],
     queryFn: () => {
       if (location) {
         return calculateDistance({
@@ -43,7 +47,9 @@ export default function ViewMap({
           destination: desCoor,
         });
       } else {
-        return () => {};
+        return () => {
+          return "0 km";
+        };
       }
     },
   });
@@ -54,19 +60,21 @@ export default function ViewMap({
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== "granted") {
           setErrorMsg("Permission to access location was denied");
-          navigation.goBack();
+          // navigation.goBack();
           console.log("Fail");
           return;
         }
 
         let result = await Location.getCurrentPositionAsync({});
-        setLocation({
-          latitude: result.coords.latitude,
-          longitude: result.coords.longitude,
-        });
+        if (!locationCustom) {
+          setLocation({
+            latitude: result.coords.latitude,
+            longitude: result.coords.longitude,
+          });
+        }
       } catch (error) {
         console.log(error);
-        navigation.goBack();
+        // navigation.goBack();
       }
     })();
   }, []);
@@ -75,7 +83,7 @@ export default function ViewMap({
 
   return (
     <View className="flex-1" style={{ marginBottom: marginBottomViewMap }}>
-      {location != null ? (
+      {location ? (
         <MapView
           onMapReady={() => {
             setMarginBottom(5);
@@ -94,16 +102,23 @@ export default function ViewMap({
           mapPadding={{ top: 400, bottom: 300, right: 20 }}
           style={{ flex: 1, marginBottom: marginBottom }}
         >
-          {/* <MapViewDirections
-            origin={desCoor}
-            destination={{
-              latitude: location.latitude,
-              longitude: location.longitude,
-            }}
-            apikey={EXPO_PUBLIC_MAP_APIKEY}
-            strokeWidth={7}
-            strokeColor="#00B0FF"
-          /> */}
+          {isMapViewDirection ? (
+            <>
+              <MapViewDirections
+                origin={desCoor}
+                destination={{
+                  latitude: location.latitude,
+                  longitude: location.longitude,
+                }}
+                apikey={EXPO_PUBLIC_MAP_APIKEY}
+                strokeWidth={7}
+                strokeColor="#00B0FF"
+              />
+              <Marker coordinate={desCoor} title="Destination Location" />
+            </>
+          ) : (
+            <></>
+          )}
           {!isShowUserLocation ? (
             <Marker
               coordinate={{
@@ -134,7 +149,6 @@ export default function ViewMap({
           ) : (
             <></>
           )}
-          {/* <Marker coordinate={desCoor} title="Destination Location" /> */}
         </MapView>
       ) : (
         <View className="h-full flex justify-center items-center">

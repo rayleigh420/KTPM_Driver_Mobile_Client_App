@@ -1,3 +1,3 @@
 export default {
-  // logoGrabWhite: require("../assets/grabWhite.png"),
+  logoGrabWhite: require("../assets/grabWhite.png"),
 };

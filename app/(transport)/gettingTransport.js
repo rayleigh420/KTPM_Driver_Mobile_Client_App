@@ -3,12 +3,20 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@rneui/base";
 import { Icon, Divider } from "@rneui/themed";
 import { fontSizes, icons } from "../../src/constants";
-import { Stack, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useQuery } from "@tanstack/react-query";
+import _ from "lodash";
+import { getLocationString } from "../../src/api/mapAPI";
+import { getData } from "../../src/utils/asyncStorage";
+import { useSocket } from "../../src/utils/SocketContext";
 
 export default function SignIn() {
   const navigation = useRouter();
   const [countDown, setCountDown] = useState(30);
   const timer = useRef(countDown);
+  const [dataUserBooking, setDataUserBooking] = useState(null);
+  const { socketRef, connectSocket, disconnectSocket } = useSocket();
+
   useEffect(() => {
     timer.current = setInterval(() => {
       setCountDown((pre) => pre - 1);
@@ -20,6 +28,29 @@ export default function SignIn() {
       navigation.push("/");
     }
   }, [countDown]);
+  useEffect(() => {
+    (async () => {
+      const dataUserBookingTemp = await getData("dataUserBooking");
+      setDataUserBooking(dataUserBookingTemp);
+    })();
+  }, []);
+
+  const { data: destinationString } = useQuery({
+    queryKey: ["locationString", dataUserBooking?.destination],
+    queryFn: () =>
+      getLocationString(
+        dataUserBooking?.destination?.lat,
+        dataUserBooking?.destination?.lon
+      ),
+  });
+  const { data: pickUpString } = useQuery({
+    queryKey: ["locationString", dataUserBooking?.pickup],
+    queryFn: () =>
+      getLocationString(
+        dataUserBooking?.pickup?.lat,
+        dataUserBooking?.pickup?.lon
+      ),
+  });
   return (
     <View
       style={{
@@ -61,7 +92,9 @@ export default function SignIn() {
           }}
         >
           <Text style={{ color: "white", fontSize: fontSizes.h6 }}>vnd</Text>
-          <Text style={{ fontSize: 38, color: "white" }}>24.444</Text>
+          <Text style={{ fontSize: 38, color: "white" }}>
+            {dataUserBooking?.price}
+          </Text>
           <Text style={{ color: "white", fontSize: fontSizes.h5 }}>
             Net income
           </Text>
@@ -80,7 +113,7 @@ export default function SignIn() {
                 color: "black",
               }}
             >
-              Cash
+              {dataUserBooking?.paymentMethod}
             </Text>
           </View>
         </View>
@@ -105,12 +138,12 @@ export default function SignIn() {
                 color: "white",
               }}
             >
-              GrabBike Binh Duong
+              GrabBike
             </Text>
           </View>
           <Divider />
           <View style={{ marginTop: 20 }}>
-            <View
+            {/* <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -127,7 +160,7 @@ export default function SignIn() {
                 0.16
               </Text>
               <Text style={{ color: "white" }}> km from you</Text>
-            </View>
+            </View> */}
 
             <View style={{ flexDirection: "row", marginTop: 10 }}>
               <View
@@ -191,11 +224,9 @@ export default function SignIn() {
                       fontWeight: 600,
                     }}
                   >
-                    Doc La Binh Duong Bakery
+                    {_.trim(_.split(pickUpString, ",")[0])}
                   </Text>
-                  <Text style={{ color: "white" }}>
-                    6/19 Nguyen Van Linh, Phan Thanh, Thanh Khe, Binh Duong
-                  </Text>
+                  <Text style={{ color: "white" }}>{pickUpString}</Text>
                 </View>
                 <View>
                   <Text
@@ -205,11 +236,9 @@ export default function SignIn() {
                       fontWeight: 600,
                     }}
                   >
-                    Doc La Binh Duong Garage
+                    {_.trim(_.split(destinationString, ",")[0])}
                   </Text>
-                  <Text style={{ color: "white" }}>
-                    6/15 Nguyen Van Troi, Thac Gian, Thanh My, Binh Duong
-                  </Text>
+                  <Text style={{ color: "white" }}>{destinationString}</Text>
                 </View>
               </View>
             </View>
@@ -227,16 +256,20 @@ export default function SignIn() {
             titleStyle={{ marginLeft: 30 }}
             onPress={() => {
               clearInterval(timer.current);
+              socketRef.current.emit("driverResponse", {
+                status: "accept",
+              });
               navigation.push({
                 pathname: "/progressTransport",
                 params: {
-                  pickUpLocation:
-                    "Doc La Binh Duong Bakery, 6/19 Nguyen Van Linh, Phan Thanh, Thanh Khe, Binh Duong",
-                  destinationLocation:
-                    "Doc La Binh Duong Garage,6/15 Nguyen Van Troi, Thac Gian, Thanh My, Binh Duong",
-                  nameCustomer: "Nguyen Ngoc Anh Thu",
-                  price: 22.222,
-                  methodPayment: "Cash",
+                  pickUpLocation: pickUpString,
+                  destinationLocation: destinationString,
+                  nameCustomer: dataUserBooking?.customer?.username,
+                  price: +dataUserBooking?.price,
+                  methodPayment: dataUserBooking?.paymentMethod,
+                  customerId: dataUserBooking?.customerId,
+                  destinationLatitude: dataUserBooking?.destination?.lat,
+                  destinationLongitude: dataUserBooking?.destination?.lon,
                 },
               });
             }}

@@ -3,4 +3,6 @@ export default {
   // computer: require('../assets/computer.png')
   avatar: require("../assets/conan.jpg"),
   doneTransport: require("../assets/done-transport.png"),
+  flagVietNam: require("../assets/flagofvietnam.png"),
+  // computer: require('../assets/computer.png')
 };

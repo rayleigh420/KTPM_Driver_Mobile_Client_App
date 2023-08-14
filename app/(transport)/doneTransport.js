@@ -11,11 +11,14 @@ import { Button } from "@rneui/base";
 import { Icon, Divider } from "@rneui/themed";
 import { fontSizes, icons, images } from "../../src/constants";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useSocket } from "../../src/utils/SocketContext";
+import { storeData } from "../../src/utils/asyncStorage";
 
 export default function SignIn() {
   const navigation = useRouter();
   const [countDown, setCountDown] = useState(5);
   const timer = useRef(countDown);
+  const { socketRef, connectSocket, disconnectSocket } = useSocket();
   useEffect(() => {
     timer.current = setInterval(() => {
       setCountDown((pre) => pre - 1);
@@ -156,7 +159,7 @@ export default function SignIn() {
             justifyContent: "space-between",
           }}
           titleStyle={{ fontSize: fontSizes.h3 }}
-          onPress={() => {
+          onPress={async () => {
             navigation.push("/");
             clearInterval(timer.current);
           }}

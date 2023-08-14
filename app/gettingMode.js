@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Platform,
   Text,
@@ -10,12 +10,14 @@ import {
 } from "react-native";
 import * as Location from "expo-location";
 import { ViewMap } from "../src/components";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { Button } from "@rneui/base";
 import { Icon } from "@rneui/themed";
 import { images, fontSizes } from "../src/constants";
 import { TouchableOpacity } from "react-native";
-import socket from "../src/utils/socket";
+import { io } from "socket.io-client";
+import { storeData } from "../src/utils/asyncStorage";
+import { useSocket } from "../src/utils/SocketContext";
 
 function gettingMode() {
   const services = [
@@ -45,24 +47,36 @@ function gettingMode() {
       icon: "bolt",
     },
   ];
+  const { socketRef, connectSocket, disconnectSocket } = useSocket();
   const [status, setStatus] = useState(false);
+  const navigation = useRouter();
   const handleClickStatus = () => {
     if (status === true) {
       setStatus(false);
-      socket.disconnect();
+      if (socketRef.current) {
+        disconnectSocket();
+      }
     } else if (status === false) {
       setStatus(true);
     }
   };
   useEffect(() => {
-    if (status === true) {
-      socket.on("rideRequest", (data) => {
-        console.log(111, data);
-      });
-    } else if (status === false) {
-      socket.disconnect();
-    }
-  });
+    (async () => {
+      if (status === true) {
+        connectSocket();
+        if (socketRef.current) {
+          socketRef.current.on("rideRequest", (data) => {
+            // console.log("Data ride request: ", data);
+            navigation.push({
+              pathname: "/gettingTransport",
+            });
+            storeData(data, "dataUserBooking");
+          });
+        }
+      }
+    })();
+  }, [status]);
+
   return (
     <View
       style={{
@@ -104,7 +118,7 @@ function gettingMode() {
           }}
           titleStyle={{ color: "black", marginLeft: 5, fontWeight: 600 }}
           onPress={() => {
-            Alert.alert("Click Income");
+            navigation.push("/ICToday");
           }}
         >
           <Icon
