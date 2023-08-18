@@ -80,7 +80,6 @@ export default function ViewMap({
   }, []);
 
   const [marginBottom, setMarginBottom] = useState(null);
-
   return (
     <View className="flex-1" style={{ marginBottom: marginBottomViewMap }}>
       {location ? (

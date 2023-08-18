@@ -4,7 +4,7 @@ import React from "react";
 import { Text, View } from "react-native";
 
 export default function App() {
-  return <Redirect href="/home" />;
+  return <Redirect href="/signIn" />;
   // return (
 
   //   <View className="flex-1 items-center justify-center bg-white gap-3">

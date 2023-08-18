@@ -270,6 +270,8 @@ export default function SignIn() {
                   customerId: dataUserBooking?.customerId,
                   destinationLatitude: dataUserBooking?.destination?.lat,
                   destinationLongitude: dataUserBooking?.destination?.lon,
+                  pickUpLatitude: dataUserBooking?.pickup?.lat,
+                  pickUpLongitude: dataUserBooking?.pickup?.lon,
                 },
               });
             }}

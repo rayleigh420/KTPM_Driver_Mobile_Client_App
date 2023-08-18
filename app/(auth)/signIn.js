@@ -1,14 +1,24 @@
 import { View, Text, Image } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@rneui/base";
 import { Icon } from "@rneui/themed";
 import { fontSizes, icons } from "../../src/constants";
-import { Stack, useRouter } from "expo-router";
+import { Stack, router, useRouter } from "expo-router";
 import { EXPO_PUBLIC_API_KEY } from "@env";
+import { getData } from "../../src/utils/asyncStorage";
 
 export default function SignIn() {
   const navigation = useRouter();
-  // console.log(EXPO_PUBLIC_API_KEY);
+  useEffect(() => {
+    (async () => {
+      const dataUser = getData("user");
+      if (dataUser) {
+        if (dataUser?.userId) {
+          router.replace("/gettingMode");
+        }
+      }
+    })();
+  }, []);
   return (
     <View
       style={{
@@ -24,6 +34,7 @@ export default function SignIn() {
             backgroundColor: "#14BF61",
           },
           headerShadowVisible: false,
+          headerBackVisible: false,
         }}
       />
       <View
@@ -57,6 +68,9 @@ export default function SignIn() {
         }}
       >
         <Button
+          containerStyle={{
+            borderRadius: 50,
+          }}
           buttonStyle={{
             width: "88%",
             height: 56,
@@ -86,6 +100,9 @@ export default function SignIn() {
           Continue With Facebook
         </Button>
         <Button
+          containerStyle={{
+            borderRadius: 50,
+          }}
           buttonStyle={{
             width: "88%",
             height: 56,
@@ -159,6 +176,9 @@ export default function SignIn() {
           />
         </View>
         <Button
+          containerStyle={{
+            borderRadius: 50,
+          }}
           buttonStyle={{
             width: "88%",
             height: 56,
@@ -178,8 +198,15 @@ export default function SignIn() {
             alignSelf: "center",
             textAlign: "center",
           }}
-          onPress={() => {
-            navigation.push("/signInInput");
+          onPress={async () => {
+            const dataUser = await getData("user");
+            if (dataUser) {
+              if (dataUser?.userId) {
+                router.replace("/gettingMode");
+              }
+            } else if (dataUser === null) {
+              navigation.push("/signInInput");
+            }
           }}
         >
           <Icon

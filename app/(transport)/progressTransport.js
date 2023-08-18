@@ -8,6 +8,7 @@ import {
   Pressable,
   Alert,
   TouchableOpacity,
+  Animated,
 } from "react-native";
 import * as Location from "expo-location";
 import { ViewMap } from "../../src/components";
@@ -16,6 +17,9 @@ import { Button, Divider } from "@rneui/base";
 import { Icon } from "@rneui/themed";
 import { images, fontSizes } from "../../src/constants";
 import { useSocket } from "../../src/utils/SocketContext";
+import { BackHandler } from "react-native";
+import { ButtonGoogleMap } from "../../src/components";
+import SlidingUpPanel from "rn-sliding-up-panel";
 
 function progressTransport() {
   const navigation = useRouter();
@@ -42,10 +46,10 @@ function progressTransport() {
     },
   ];
   const [status, setStatus] = useState(1);
-  const [mapViewDirection, setMapViewDirection] = useState(false);
   const { socketRef, connectSocket, disconnectSocket } = useSocket();
   const [location, setLocation] = useState(null);
   const timer = useRef(null);
+  const panelRef = useRef(null);
   const handleClickButtonProgress = async () => {
     if (status === 1) {
       setStatus(2);
@@ -74,8 +78,22 @@ function progressTransport() {
     customerId,
     destinationLatitude,
     destinationLongitude,
+    pickUpLatitude,
+    pickUpLongitude,
   } = params;
   useEffect(() => {
+    panelRef.current.show();
+    const backAction = () => {
+      // Đặt hành động bạn muốn thực hiện ở đây khi người dùng nhấn nút Back
+      // Ví dụ: thông báo hoặc không thực hiện gì cả.
+      return true; // Trả về true để chặn việc điều hướng trở lại màn hình trước
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
     const updateLocation = async () => {
       try {
         let { status: statusLocation } =
@@ -91,13 +109,15 @@ function progressTransport() {
           longitude: result.coords.longitude,
         });
         if (status === 1) {
-          socketRef.current.emit("updateLocationDriver", {
-            customerId: customerId,
-            location: {
-              lat: result.coords.latitude,
-              lon: result.coords.longitude,
-            },
-          });
+          if (socketRef.current) {
+            socketRef.current.emit("updateLocationDriver", {
+              customerId: customerId,
+              location: {
+                lat: result.coords.latitude,
+                lon: result.coords.longitude,
+              },
+            });
+          }
         }
       } catch (error) {
         console.log(error);
@@ -111,6 +131,7 @@ function progressTransport() {
     return () => {
       clearInterval(timer.current);
       timer.current = null;
+      backHandler.remove();
     };
   }, []);
 
@@ -141,91 +162,86 @@ function progressTransport() {
       <View className="h-full">
         <ViewMap
           targetAddress={status !== 3 ? pickUpLocation : destinationLocation}
-          marginBottomViewMap={!mapViewDirection ? 300 : 0}
-          isMapViewDirection={mapViewDirection}
+          marginBottomViewMap={70}
+          isMapViewDirection
           locationCustom={location}
         />
       </View>
       <View
         style={{
-          height: mapViewDirection ? 90 : "50%",
+          height: "50%",
           width: "100%",
           position: "absolute",
           bottom: 0,
           left: 0,
           alignItems: "center",
+          // backgroundColor: "red",
         }}
       >
-        <View
-          style={{
-            height: mapViewDirection ? "100%" : "20%",
-            backgroundColor: "white",
-            width: "100%",
-            flexDirection: "row",
-            alignItems: "center",
-            paddingHorizontal: 10,
-            justifyContent: "space-between",
-          }}
+        <SlidingUpPanel
+          ref={panelRef}
+          draggableRange={{ top: 390, bottom: 80 }}
+          animatedValue={new Animated.Value(180)}
+          showBackdrop={false}
+          friction={0.2}
         >
-          {mapViewDirection ? (
-            <TouchableOpacity
-              style={{ alignItems: "center", marginLeft: 20 }}
-              onPress={() => setMapViewDirection(false)}
-            >
-              <Icon
-                type="font-awesome-5"
-                name="chevron-up"
-                iconStyle={{ fontSize: fontSizes.h4 }}
-                color={"black"}
-              />
-              <Text style={{ fontSize: fontSizes.h5 }}>Back</Text>
-            </TouchableOpacity>
-          ) : (
-            <View style={{ alignItems: "center" }}>
-              <Icon
-                type="font-awesome-5"
-                name="motorcycle"
-                iconStyle={{ fontSize: fontSizes.h4 }}
-                color={"black"}
-              />
-              <Text style={{ fontSize: fontSizes.h5 }}>GrabBike</Text>
-            </View>
-          )}
-          <Text
-            style={{
-              fontSize: fontSizes.h3,
-              fontWeight: 600,
-              color: "#007437",
-            }}
-          >
-            {status !== 3 ? "Pick up customer" : "Delivered customer"}
-          </Text>
-          <View style={{ alignItems: "center" }}>
-            <Button
-              buttonStyle={{
-                height: 40,
-                width: 40,
-                borderRadius: 100,
-                backgroundColor: "#1270C6",
-              }}
-              onPress={() => setMapViewDirection(true)}
-            >
-              <Icon
-                type="feather"
-                name="navigation"
-                iconStyle={{ fontSize: fontSizes.h4 }}
-                color={"white"}
-              />
-            </Button>
-            <Text style={{ fontSize: fontSizes.h5 }}>Directional</Text>
-          </View>
-        </View>
-        {!mapViewDirection ? (
           <>
+            <View
+              style={{
+                height: 80,
+                backgroundColor: "white",
+                width: "100%",
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: 10,
+                justifyContent: "space-between",
+                // backgroundColor: "blue",
+              }}
+            >
+              <View style={{ alignItems: "center" }}>
+                <Icon
+                  type="font-awesome-5"
+                  name="motorcycle"
+                  iconStyle={{ fontSize: fontSizes.h4 }}
+                  color={"black"}
+                />
+                <Text style={{ fontSize: fontSizes.h5 }}>GrabBike</Text>
+              </View>
+              <View
+                style={{ alignItems: "center", justifyContent: "flex-end" }}
+              >
+                <View
+                  style={{
+                    height: 6,
+                    width: 40,
+                    backgroundColor: "gray",
+                    borderRadius: 5,
+                    marginBottom: 15,
+                    opacity: 0.5,
+                  }}
+                />
+                <Text
+                  style={{
+                    fontSize: fontSizes.h3,
+                    fontWeight: 600,
+                    color: "#007437",
+                  }}
+                >
+                  {status !== 3 ? "Pick up customer" : "Delivered customer"}
+                </Text>
+              </View>
+              <ButtonGoogleMap
+                latitude={status !== 3 ? pickUpLatitude : destinationLatitude}
+                longitude={
+                  status !== 3 ? pickUpLongitude : destinationLongitude
+                }
+                // label={status !== 3 ? pickUpLocation : destinationLocation}
+              />
+            </View>
             <Divider />
             <View
               style={{
-                height: "40%",
+                height: 150,
                 backgroundColor: "white",
                 width: "100%",
                 paddingHorizontal: 10,
@@ -273,8 +289,8 @@ function progressTransport() {
             <Divider />
             <View
               style={{
-                height: "40%",
-                backgroundColor: "white",
+                height: 100,
+                // backgroundColor: "green",
                 width: "100%",
               }}
             >
@@ -354,9 +370,7 @@ function progressTransport() {
               </Button>
             </View>
           </>
-        ) : (
-          <></>
-        )}
+        </SlidingUpPanel>
       </View>
     </View>
   );

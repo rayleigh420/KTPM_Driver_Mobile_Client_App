@@ -18,20 +18,21 @@ LogBox.ignoreAllLogs(); //Ignore all log notifications
 export default function SignUp() {
   const navigation = useRouter();
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [errorEmail, setErrorEmail] = useState("");
 
   const [showError, setShowError] = useState(false);
 
   const signUpMutation = useMutation({
-    mutationFn: ({ email, role }) => signUp({ email, role }),
+    mutationFn: ({ email, role }) => signUp({ email, phone, role }),
     onSuccess: (data) => {
       navigation.push("/typePass");
       storeData(email, "emailSignUp");
       // console.log(data);
     },
     onError: (err) => {
-      if (err.response.status == 401) {
-        setErrorEmail("Email already exist");
+      if (err.response.status !== 200) {
+        setErrorEmail(err.response.data.message);
         setShowError(true);
       }
     },
@@ -125,6 +126,47 @@ export default function SignUp() {
           {showError && (
             <Text style={{ marginTop: 10, color: "red" }}>{errorEmail}</Text>
           )}
+        </View>
+      </View>
+      <View
+        style={{
+          height: 80,
+          marginTop: 10,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: fontSizes.h4,
+            marginLeft: 20,
+          }}
+        >
+          Phone
+        </Text>
+        <View
+          style={{
+            // flexDirection: "row",
+            marginTop: 20,
+            marginHorizontal: 20,
+          }}
+        >
+          <TextInput
+            placeholder="099999999"
+            placeholderTextColor={"gray"}
+            keyboardType="number-pad"
+            style={{
+              fontSize: fontSizes.h3,
+              borderBottomWidth: 1,
+              // borderBottomColor: showError ? "red" : "gray",
+            }}
+            value={phone}
+            onChangeText={(text) => {
+              setPhone(text);
+              // setShowError(false);
+            }}
+          />
+          {/* {showError && (
+            <Text style={{ marginTop: 10, color: "red" }}>{errorEmail}</Text>
+          )} */}
         </View>
       </View>
       <View

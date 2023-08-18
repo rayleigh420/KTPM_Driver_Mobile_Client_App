@@ -12,7 +12,7 @@ import { Icon, Divider } from "@rneui/themed";
 import { fontSizes, icons, images } from "../../src/constants";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useSocket } from "../../src/utils/SocketContext";
-import { storeData } from "../../src/utils/asyncStorage";
+import { removeData, storeData } from "../../src/utils/asyncStorage";
 
 export default function SignIn() {
   const navigation = useRouter();
@@ -27,12 +27,26 @@ export default function SignIn() {
   useEffect(() => {
     if (countDown === 0) {
       clearInterval(timer.current);
-      navigation.push("/");
+      handleReturnGettingMode();
     }
   }, [countDown]);
   const params = useLocalSearchParams();
   const { price, methodPayment } = params;
-  return (
+  const handleReturnGettingMode = async () => {
+    navigation.push("/gettingMode");
+    clearInterval(timer.current);
+    connectSocket();
+    if (socketRef.current) {
+      socketRef.current.on("rideRequest", (data) => {
+        navigation.push({
+          pathname: "/gettingTransport",
+        });
+        removeData("dataUserBooking");
+        storeData(data, "dataUserBooking");
+      });
+    }
+  };
+  return (                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
     <View
       style={{
         flex: 1,
@@ -159,10 +173,7 @@ export default function SignIn() {
             justifyContent: "space-between",
           }}
           titleStyle={{ fontSize: fontSizes.h3 }}
-          onPress={async () => {
-            navigation.push("/");
-            clearInterval(timer.current);
-          }}
+          onPress={handleReturnGettingMode}
         >
           <View />
           Done

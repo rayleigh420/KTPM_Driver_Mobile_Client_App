@@ -9,11 +9,12 @@ import React, { useState } from "react";
 import { Button } from "@rneui/base";
 import { Icon } from "@rneui/themed";
 import { fontSizes, icons } from "../../src/constants";
-import { Stack, useRouter } from "expo-router";
+import { Stack, useRouter, router } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
 import { signIn } from "../../src/api/testAPI";
 import { validateEmail } from "../../src/utils/validates";
 import { storeData } from "../../src/utils/asyncStorage";
+import { TouchableOpacity } from "react-native";
 
 function typePin() {
   const navigation = useRouter();
@@ -21,11 +22,11 @@ function typePin() {
     mutationFn: ({ email, password }) => signIn({ email, password }),
     onSuccess: (data) => {
       storeData(data.data, "user");
-      navigation.push("/profile");
+      router.replace("/gettingMode");
     },
     onError: (err) => {
-      if (err.response.status == 401) {
-        setError("Password incorrect");
+      if (err.response.status !== 200) {
+        setError(err.response.data.message);
       }
     },
   });
@@ -150,6 +151,32 @@ function typePin() {
       >
         Forgot Password
       </Button>
+      <Text style={{ textAlign: "center", color: "gray", opacity: 0.8 }}>
+        You haven't account
+      </Text>
+      <TouchableOpacity
+        style={{
+          marginTop: 10,
+          borderRadius: 30,
+          height: 55,
+          marginHorizontal: 20,
+          alignSelf: "center",
+        }}
+        onPress={() => {
+          router.replace("/signUp");
+        }}
+      >
+        <Text
+          style={{
+            fontSize: fontSizes.h3,
+            textDecorationLine: "underline",
+            color: "#14BF61",
+            fontWeight: 600,
+          }}
+        >
+          Sign Up
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }

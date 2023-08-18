@@ -106,9 +106,9 @@ export default function ICtoday() {
             }}
           ></View>
         </TabView.Item>
-        <TabView.Item style={{ backgroundColor: "green", width: "100%" }}>
-          <Text h1>Cart</Text>
-        </TabView.Item>
+        <TabView.Item
+          style={{ backgroundColor: "white", width: "100%" }}
+        ></TabView.Item>
       </TabView>
       <Tab
         value={index}

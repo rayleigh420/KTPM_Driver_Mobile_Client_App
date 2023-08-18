@@ -10,14 +10,21 @@ import {
 } from "react-native";
 import * as Location from "expo-location";
 import { ViewMap } from "../src/components";
-import { Stack, useRouter } from "expo-router";
+import { router, Stack, useRouter } from "expo-router";
 import { Button } from "@rneui/base";
 import { Icon } from "@rneui/themed";
 import { images, fontSizes } from "../src/constants";
 import { TouchableOpacity } from "react-native";
 import { io } from "socket.io-client";
-import { storeData } from "../src/utils/asyncStorage";
+import { removeData, storeData } from "../src/utils/asyncStorage";
 import { useSocket } from "../src/utils/SocketContext";
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+  MenuProvider,
+} from "react-native-popup-menu";
 
 function gettingMode() {
   const services = [
@@ -76,7 +83,6 @@ function gettingMode() {
       }
     })();
   }, [status]);
-
   return (
     <View
       style={{
@@ -88,6 +94,7 @@ function gettingMode() {
           title: "",
           // headerShadowVisible: false,
           headerShown: false,
+          headerBackVisible: false,
         }}
       />
       <View className="h-full">
@@ -108,6 +115,9 @@ function gettingMode() {
         }}
       >
         <Button
+          containerStyle={{
+            borderRadius: 30,
+          }}
           buttonStyle={{
             backgroundColor: "white",
             borderColor: "gray",
@@ -129,58 +139,83 @@ function gettingMode() {
           />
           Income
         </Button>
-        <TouchableOpacity
-          onPress={() => {
-            Alert.alert("Click Avatar");
-          }}
-        >
-          <Image
-            source={images.avatar}
-            style={{
-              height: 65,
-              width: 65,
-              borderRadius: 100,
-            }}
-          />
-          <View
-            style={{
-              height: 15,
-              width: 15,
-              borderRadius: 100,
-              backgroundColor: "#FF564D",
-              position: "absolute",
-              top: 4,
-              right: 4,
-              borderWidth: 2,
-              borderColor: "white",
-            }}
-          />
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              width: 70,
-              height: 30,
-              backgroundColor: "white",
-              paddingHorizontal: 5,
-              borderRadius: 20,
-              marginTop: -10,
-            }}
-          >
-            <Icon
-              type="font-awesome"
-              name="star"
-              iconStyle={{
-                color: "#FFC232",
-                marginHorizontal: 5,
-                fontSize: 15,
+        <Menu>
+          <MenuTrigger>
+            <Image
+              source={images.avatar}
+              style={{
+                height: 65,
+                width: 65,
+                borderRadius: 100,
               }}
             />
-            <Text style={{ fontSize: fontSizes.h4, fontWeight: 600 }}>
-              4.96
-            </Text>
-          </View>
-        </TouchableOpacity>
+            <View
+              style={{
+                height: 15,
+                width: 15,
+                borderRadius: 100,
+                backgroundColor: "#FF564D",
+                position: "absolute",
+                top: 4,
+                right: 4,
+                borderWidth: 2,
+                borderColor: "white",
+              }}
+            />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                width: 70,
+                height: 30,
+                backgroundColor: "white",
+                paddingHorizontal: 5,
+                borderRadius: 20,
+                marginTop: -10,
+              }}
+            >
+              <Icon
+                type="font-awesome"
+                name="star"
+                iconStyle={{
+                  color: "#FFC232",
+                  marginHorizontal: 5,
+                  fontSize: 15,
+                }}
+              />
+              <Text style={{ fontSize: fontSizes.h4, fontWeight: 600 }}>
+                4.96
+              </Text>
+            </View>
+          </MenuTrigger>
+          <MenuOptions
+            style={{
+              position: "absolute",
+              top: 60,
+              left: 0,
+              backgroundColor: "white",
+              width: 200,
+              paddingHorizontal: 10,
+              paddingVertical: 10,
+              borderRadius: 10,
+            }}
+          >
+            <MenuOption
+              onSelect={() => {
+                navigation.push("/profile");
+              }}
+              text="Profile"
+            />
+            <MenuOption
+              onSelect={() => {
+                router.replace("/signIn");
+                removeData("user");
+              }}
+            >
+              <Text style={{ color: "red" }}>Log out</Text>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
       </View>
       <View
         style={{

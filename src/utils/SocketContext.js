@@ -8,7 +8,6 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = ({ children }) => {
-  const [socket, setSocket] = useState(null);
   const socketRef = useRef(null);
   const connectSocket = () => {
     socketRef.current = io.connect(

@@ -7,9 +7,10 @@ export const test = async () => {
   return result.data;
 };
 
-export const signUp = async ({ email, role }) => {
+export const signUp = async ({ email, phone, role }) => {
   const result = await axios.post("/auth/signup", {
     email: email,
+    phoneNumber: phone,
     role: role,
   });
   return result.data;
