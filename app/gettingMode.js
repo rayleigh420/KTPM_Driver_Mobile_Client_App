@@ -73,7 +73,7 @@ function gettingMode() {
         connectSocket();
         if (socketRef.current) {
           socketRef.current.on("rideRequest", (data) => {
-            // console.log("Data ride request: ", data);
+            console.log("Data ride request: ", data);
             navigation.push({
               pathname: "/gettingTransport",
             });

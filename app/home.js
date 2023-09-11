@@ -191,7 +191,6 @@ export default function SignIn() {
           }}
           onPress={async () => {
             const dataUser = await getData("user");
-            console.log(dataUser);
             if (dataUser) {
               if (dataUser?.userId) {
                 router.replace("/gettingMode");

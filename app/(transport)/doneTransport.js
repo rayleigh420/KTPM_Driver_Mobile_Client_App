@@ -36,6 +36,7 @@ export default function SignIn() {
     navigation.push("/gettingMode");
     clearInterval(timer.current);
     connectSocket();
+    console.log(bookingID);
     if (socketRef.current) {
       socketRef.current.emit("driverResponse", {
         bookingId: bookingID,

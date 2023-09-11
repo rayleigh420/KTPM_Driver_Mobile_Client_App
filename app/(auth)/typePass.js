@@ -54,7 +54,6 @@ function getCode() {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getData("emailSignUp");
-      console.log(data);
       setEmail(data);
     };
     fetchData();
