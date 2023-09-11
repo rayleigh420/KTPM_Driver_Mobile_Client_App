@@ -24,8 +24,11 @@ export default function SignIn() {
   }, []);
   useEffect(() => {
     if (countDown === 0) {
+      socketRef.current.emit("driverResponse", {
+        status: "reject",
+      });
       clearInterval(timer.current);
-      navigation.push("/");
+      navigation.push("/gettingMode");
     }
   }, [countDown]);
   useEffect(() => {
@@ -272,6 +275,7 @@ export default function SignIn() {
                   destinationLongitude: dataUserBooking?.destination?.lon,
                   pickUpLatitude: dataUserBooking?.pickup?.lat,
                   pickUpLongitude: dataUserBooking?.pickup?.lon,
+                  bookingID: dataUserBooking?.customer?.bookingId,
                 },
               });
             }}

@@ -15,7 +15,7 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 export default function SignIn() {
   const navigation = useRouter();
   const params = useLocalSearchParams();
-  const { nameCustomer, price, methodPayment } = params;
+  const { nameCustomer, price, methodPayment, bookingID } = params;
   return (
     <View
       style={{
@@ -144,6 +144,7 @@ export default function SignIn() {
               params: {
                 methodPayment: methodPayment,
                 price: price,
+                bookingID: bookingID,
               },
             });
           }}

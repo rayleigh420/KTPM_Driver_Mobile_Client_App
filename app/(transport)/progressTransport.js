@@ -64,6 +64,7 @@ function progressTransport() {
           nameCustomer: nameCustomer,
           price: price,
           methodPayment: methodPayment,
+          bookingID: bookingID,
         },
       });
     }
@@ -80,6 +81,7 @@ function progressTransport() {
     destinationLongitude,
     pickUpLatitude,
     pickUpLongitude,
+    bookingID,
   } = params;
   useEffect(() => {
     panelRef.current.show();

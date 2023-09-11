@@ -31,12 +31,16 @@ export default function SignIn() {
     }
   }, [countDown]);
   const params = useLocalSearchParams();
-  const { price, methodPayment } = params;
+  const { price, methodPayment, bookingID } = params;
   const handleReturnGettingMode = async () => {
     navigation.push("/gettingMode");
     clearInterval(timer.current);
     connectSocket();
     if (socketRef.current) {
+      socketRef.current.emit("driverResponse", {
+        bookingId: bookingID,
+        status: "completed",
+      });
       socketRef.current.on("rideRequest", (data) => {
         navigation.push({
           pathname: "/gettingTransport",
@@ -46,7 +50,7 @@ export default function SignIn() {
       });
     }
   };
-  return (                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+  return (
     <View
       style={{
         flex: 1,
