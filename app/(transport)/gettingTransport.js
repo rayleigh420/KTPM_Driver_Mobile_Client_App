@@ -16,6 +16,7 @@ export default function SignIn() {
   const timer = useRef(countDown);
   const [dataUserBooking, setDataUserBooking] = useState(null);
   const { socketRef, connectSocket, disconnectSocket } = useSocket();
+  const [isAccept, setIsAccept] = useState(false);
 
   useEffect(() => {
     timer.current = setInterval(() => {
@@ -24,13 +25,20 @@ export default function SignIn() {
   }, []);
   useEffect(() => {
     if (countDown === 0) {
-      socketRef.current.emit("driverResponse", {
-        status: "reject",
-      });
+      setIsAccept(false);
       clearInterval(timer.current);
       navigation.push("/gettingMode");
     }
   }, [countDown]);
+  useEffect(() => {
+    if (!isAccept) {
+      if (socketRef) {
+        socketRef.current.emit("driverResponse", {
+          status: "reject",
+        });
+      }
+    }
+  }, [isAccept]);
   useEffect(() => {
     (async () => {
       const dataUserBookingTemp = await getData("dataUserBooking");
@@ -75,6 +83,7 @@ export default function SignIn() {
             right: 30,
           }}
           onPress={() => {
+            setIsAccept(false);
             navigation.back();
           }}
         >
@@ -262,6 +271,7 @@ export default function SignIn() {
               socketRef.current.emit("driverResponse", {
                 status: "accept",
               });
+              setIsAccept(true);
               navigation.push({
                 pathname: "/progressTransport",
                 params: {

@@ -25,7 +25,7 @@ function getCode() {
     mutationFn: ({ email, password }) => signIn({ email, password }),
     onSuccess: (data) => {
       storeData(data.data, "user");
-      navigation.push("/");
+      navigation.push("/gettingMode");
     },
     onError: (err) => {
       setError("Incorrect password");
